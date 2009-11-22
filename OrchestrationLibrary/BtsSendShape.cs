@@ -1,41 +1,50 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+// Copyright (c) 2007-2009 Endpoint Systems. All rights reserved.
+// 
+// THE PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT WITHOUT ANY WARRANTY. IT IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+// 
+// IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW THE AUTHOR WILL BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF THE AUTHOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+// 
+// 
+
+#region
+
 using System.Diagnostics;
+using System.Xml;
+
+#endregion
 
 namespace EndpointSystems.OrchestrationLibrary
 {
-    class BtsSendShape: BtsBaseComponent
+    internal class BtsSendShape : BtsBaseComponent
     {
-        private string _portName;
-        private string _msgName;
-        private string _opName;
-        private string _opMsgName;
-        private string _svcLinkName;
-        private string _svcLinkPortTypeName;
-        private string _svcLinkRoleName;
+        private readonly string _msgName;
+        private readonly string _opMsgName;
+        private readonly string _opName;
+        private readonly string _portName;
+        private readonly string _svcLinkName;
+        private readonly string _svcLinkPortTypeName;
+        private readonly string _svcLinkRoleName;
 
-        public BtsSendShape (XmlReader reader)
-            : base (reader)
+        public BtsSendShape(XmlReader reader)
+            : base(reader)
         {
-            while (reader.Read ())
+            while (reader.Read())
             {
                 if (!reader.HasAttributes)
                     break;
-                else if (reader.Name.Equals ("om:Property"))
+                if (reader.Name.Equals("om:Property"))
                 {
-                    string valName = reader.GetAttribute ("Name");
-                    string val = reader.GetAttribute ("Value");
-                    if (!base.GetReaderProperties (valName, val))
+                    string valName = reader.GetAttribute("Name");
+                    string val = reader.GetAttribute("Value");
+                    if (!GetReaderProperties(valName, val))
                     {
-                        if (valName.Equals ("PortName"))
+                        if (valName.Equals("PortName"))
                             _portName = val;
-                        else if (valName.Equals ("MessageName"))
+                        else if (valName.Equals("MessageName"))
                             _msgName = val;
-                        else if (valName.Equals ("OperationName"))
+                        else if (valName.Equals("OperationName"))
                             _opName = val;
-                        else if (valName.Equals ("OperationMessageName"))
+                        else if (valName.Equals("OperationMessageName"))
                             _opMsgName = val;
                         else if (valName.Equals("ServiceLinkName"))
                             _svcLinkName = val;
@@ -47,21 +56,21 @@ namespace EndpointSystems.OrchestrationLibrary
                             _comments = val;
                         else
                         {
-                            Debug.WriteLine ("[BtsSendShape.ctor] unhandled property " + valName);
-                            Debugger.Break ();
+                            Debug.WriteLine("[BtsSendShape.ctor] unhandled property " + valName);
+                            Debugger.Break();
                         }
                     }
                 }
-                else if (reader.Name.Equals ("om:Element"))
+                else if (reader.Name.Equals("om:Element"))
                 {
-                    Debug.WriteLine ("[BtsSendShape.ctor] unhandled element " + reader.GetAttribute ("Value"));
-                    Debugger.Break ();
-                }                
+                    Debug.WriteLine("[BtsSendShape.ctor] unhandled element " + reader.GetAttribute("Value"));
+                    Debugger.Break();
+                }
             }
-            reader.Close ();
+            reader.Close();
         }
 
-        
+
         public string ServiceLinkRoleName
         {
             get { return _svcLinkRoleName; }
@@ -96,6 +105,5 @@ namespace EndpointSystems.OrchestrationLibrary
         {
             get { return _portName; }
         }
-
     }
 }

@@ -1,9 +1,18 @@
+// Copyright (c) 2007-2009 Endpoint Systems. All rights reserved.
+// 
+// THE PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT WITHOUT ANY WARRANTY. IT IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+// 
+// IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW THE AUTHOR WILL BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF THE AUTHOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+// 
+// 
+
+#region
+
 using System;
-using System.Collections.Generic;
-using System.Collections;
-using System.Text;
-using System.Xml;
 using System.Diagnostics;
+using System.Xml;
+
+#endregion
 
 namespace EndpointSystems.OrchestrationLibrary
 {
@@ -11,85 +20,91 @@ namespace EndpointSystems.OrchestrationLibrary
     /// ServiceLink - ref for ServiceLinkDeclaration (ports?) in orchestration
     /// ServiceDeclaration_ServiceLinkDeclaration (parentlink)
     /// </summary>
-    class BtsServiceLinkDeclaration: BtsBaseComponent,IBtsBaseComponent
+    public class BtsServiceLinkDeclaration : BtsBaseComponent
     {
+        #region vars
 
-#region vars
-        /// <summary>
-        /// Orientation
-        /// </summary>
-        private string  _orientation;
-        /// <summary>
-        /// PortIndex
-        /// </summary>
-        private short     _portIdx;
-        /// <summary>
-        /// PortModifier
-        /// </summary>
-        private string  _portModifier;
-        /// <summary>
-        /// RoleName
-        /// </summary>
-        private string  _roleName;
-        /// <summary>
-        /// OrderedDelivery
-        /// </summary>
-        private bool    _ordered;
+        private readonly MessageDirection _direction;
+
         /// <summary>
         /// DeliveryNotification
         /// </summary>
-        private string _notification;
+        private readonly string _notification;
 
-        private string _type;
+        /// <summary>
+        /// OrderedDelivery
+        /// </summary>
+        private readonly bool _ordered;
 
-        private MessageDirection _direction;
-#endregion
+        /// <summary>
+        /// Orientation
+        /// </summary>
+        private readonly string _orientation;
 
-        public BtsServiceLinkDeclaration (XmlReader reader)
-            : base (reader)
+        /// <summary>
+        /// PortIndex
+        /// </summary>
+        private readonly short _portIdx;
+
+        /// <summary>
+        /// PortModifier
+        /// </summary>
+        private readonly string _portModifier;
+
+        /// <summary>
+        /// RoleName
+        /// </summary>
+        private readonly string _roleName;
+
+        private readonly string _type;
+
+        #endregion
+
+        public BtsServiceLinkDeclaration(XmlReader reader)
+            : base(reader)
         {
-            while (reader.Read ())
+            while (reader.Read())
             {
                 if (!reader.HasAttributes)
                     break;
-                else if (reader.Name.Equals ("om:Property"))
+                if (reader.Name.Equals("om:Property"))
                 {
-                    string valName = reader.GetAttribute ("Name");
-                    string val = reader.GetAttribute ("Value");
-                    if (!base.GetReaderProperties (valName, val))
+                    string valName = reader.GetAttribute("Name");
+                    string val = reader.GetAttribute("Value");
+                    if (!GetReaderProperties(valName, val))
                     {
-                        if (valName.Equals ("Orientation"))
+                        if (valName.Equals("Orientation"))
                             _orientation = val;
-                        else if (valName.Equals ("RoleName"))
+                        else if (valName.Equals("RoleName"))
                             _roleName = val;
-                        else if (valName.Equals ("PortIndex"))
-                            _portIdx = Convert.ToInt16 (val);
-                        else if (valName.Equals ("PortModifier"))
+                        else if (valName.Equals("PortIndex"))
+                            _portIdx = Convert.ToInt16(val);
+                        else if (valName.Equals("PortModifier"))
                             _portModifier = val;
-                        else if (valName.Equals ("OrderedDelivery"))
-                            _ordered = Convert.ToBoolean (val);
+                        else if (valName.Equals("OrderedDelivery"))
+                            _ordered = Convert.ToBoolean(val);
                         else if (valName.Equals("DeliveryNotification"))
                             _notification = val;
                         else if (valName.Equals("Type"))
                             _type = val;
                         else if (valName.Equals("ParamDirection"))
-                            _direction = base.GetMessageDirection(val);
+                            _direction = GetMessageDirection(val);
                         else if (valName.Equals("AnalystComments"))
                             _comments = val;
                         else
                         {
-                            Debug.WriteLine ("[ServiceLink.ctor] unhandled property " + valName);
-                            Debugger.Break ();
+                            Debug.WriteLine("[ServiceLink.ctor] unhandled property " + valName);
+                            Debugger.Break();
                         }
                     }
                 }
-                else if (reader.Name.Equals ("om:Element"))
+                else if (reader.Name.Equals("om:Element"))
                 {
-                    Debug.WriteLine ("[ServiceLink.ctor] unhandled element " + reader.GetAttribute ("Value"));
-                    Debugger.Break ();
+                    Debug.WriteLine("[ServiceLink.ctor] unhandled element " + reader.GetAttribute("Value"));
+                    Debugger.Break();
                 }
             }
-            reader.Close ();
+            reader.Close();
         }
 
 
@@ -132,6 +147,5 @@ namespace EndpointSystems.OrchestrationLibrary
         {
             get { return _orientation; }
         }
-
     }
 }

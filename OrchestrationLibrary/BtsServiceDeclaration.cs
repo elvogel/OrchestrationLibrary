@@ -1,9 +1,19 @@
+// Copyright (c) 2007-2009 Endpoint Systems. All rights reserved.
+// 
+// THE PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT WITHOUT ANY WARRANTY. IT IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+// 
+// IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW THE AUTHOR WILL BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF THE AUTHOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+// 
+// 
+
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using System.Diagnostics;
-using System.IO;
+using System.Xml;
+
+#endregion
 
 namespace EndpointSystems.OrchestrationLibrary
 {
@@ -15,68 +25,80 @@ namespace EndpointSystems.OrchestrationLibrary
     public class BtsServiceDeclaration : BtsBaseComponent
     {
         /// <summary>
-        /// InitializedTransactionType
+        /// Compensation
         /// </summary>
-        private bool _initTxType;
-        /// <summary>
-        /// IsInvokable
-        /// </summary>
-        private bool _invokable;
-        /// <summary>
-        /// TypeModifier
-        /// </summary>
-        private string _modifier;
-        /// <summary>
-        /// MessageDeclaration
-        /// </summary>
-        private List<BtsMessageDeclaration> _msgDecs = new List<BtsMessageDeclaration>();
+        private BtsCompensation _comp;
+
         /// <summary>
         /// CorrelationDeclaration
         /// </summary>
         private List<BtsCorrelationDeclaration> _corrDecs = new List<BtsCorrelationDeclaration>();
+
+        /// <summary>
+        /// InitializedTransactionType
+        /// </summary>
+        private bool _initTxType;
+
+        /// <summary>
+        /// IsInvokable
+        /// </summary>
+        private bool _invokable;
+
+        /// <summary>
+        /// TypeModifier
+        /// </summary>
+        private string _modifier;
+
+        /// <summary>
+        /// MessageDeclaration
+        /// </summary>
+        private List<BtsMessageDeclaration> _msgDecs = new List<BtsMessageDeclaration>();
+
         /// <summary>
         /// PortDeclaration
         /// </summary>
         private List<BtsPortDeclaration> _portDecs = new List<BtsPortDeclaration>();
-        /// <summary>
-        /// VariableDeclaration
-        /// </summary>
-        private List<BtsVariableDeclaration> _varDecs = new List<BtsVariableDeclaration> ();
-        /// <summary>
-        /// ServiceBody
-        /// </summary>
-        private BtsServiceBody _svcBody;
-        /// <summary>
-        /// LongRunningTransaction or AtomicTransaction  
-        /// </summary>
-        private BtsTx _tx;
-        /// <summary>
-        /// TransactionAttribute
-        /// </summary>
-        private BtsTransactionAttribute _txAtt;
-        /// <summary>
-        /// Compensation
-        /// </summary>
-        private BtsCompensation _comp;
+
         /// <summary>
         /// ServiceLinkDeclaration
         /// </summary>
         private BtsServiceLinkDeclaration _sld;
+
+        /// <summary>
+        /// ServiceBody
+        /// </summary>
+        private BtsServiceBody _svcBody;
+
         /// <summary>
         /// TargetXMLNamespaceAttribute
         /// </summary>
         private BtsTargetXmlAttribute _target;
 
+        /// <summary>
+        /// LongRunningTransaction or AtomicTransaction  
+        /// </summary>
+        private BtsTx _tx;
+
+        /// <summary>
+        /// TransactionAttribute
+        /// </summary>
+        private BtsTransactionAttribute _txAtt;
+
+        /// <summary>
+        /// VariableDeclaration
+        /// </summary>
+        private List<BtsVariableDeclaration> _varDecs = new List<BtsVariableDeclaration>();
+
         public BtsServiceDeclaration(XmlReader reader)
             : base(reader)
-        {            
+        {
             while (reader.Read())
             {
                 if (!reader.HasAttributes)
                     continue;
 
                 if (reader.Name.Equals("om:Property"))
-                    this.GetReaderProperties(reader.GetAttribute("Name"), reader.GetAttribute("Value"));
+                    GetReaderProperties(reader.GetAttribute("Name"), reader.GetAttribute("Value"));
                 else if (reader.Name.Equals("om:Element"))
                 {
                     string attr = reader.GetAttribute("Type");
@@ -104,12 +126,79 @@ namespace EndpointSystems.OrchestrationLibrary
                         _target = new BtsTargetXmlAttribute(reader.ReadSubtree());
                     else
                     {
-                        Debug.WriteLine("[BtsServiceDeclaration.ctor] unhandled element " + reader.GetAttribute("Type") + "!!!!");
+                        Debug.WriteLine("[BtsServiceDeclaration.ctor] unhandled element " + reader.GetAttribute("Type") +
+                                        "!!!!");
                         Debugger.Break();
                     }
                 }
             }
-            reader.Close();            
+            reader.Close();
+        }
+
+        public BtsServiceLinkDeclaration Sld
+        {
+            get { return _sld; }
+        }
+
+        public bool Invokable
+        {
+            get { return _invokable; }
+        }
+
+        public bool InitTxType
+        {
+            get { return _initTxType; }
+        }
+
+        public BtsTargetXmlAttribute Target
+        {
+            get { return _target; }
+        }
+
+        public BtsServiceBody ServiceBody
+        {
+            get { return _svcBody; }
+        }
+
+
+        public BtsCompensation Compensation
+        {
+            get { return _comp; }
+        }
+
+        public BtsTransactionAttribute TransactionAttribute
+        {
+            get { return _txAtt; }
+        }
+
+        public BtsTx Transaction
+        {
+            get { return _tx; }
+        }
+
+        public List<BtsVariableDeclaration> VariableDeclarations
+        {
+            get { return _varDecs; }
+        }
+
+        public List<BtsPortDeclaration> PortDeclarations
+        {
+            get { return _portDecs; }
+        }
+
+        public List<BtsCorrelationDeclaration> CorrelationDeclarations
+        {
+            get { return _corrDecs; }
+        }
+
+        public List<BtsMessageDeclaration> MessageDeclarations
+        {
+            get { return _msgDecs; }
+        }
+
+        public string TypeModifier
+        {
+            get { return _modifier; }
         }
 
         internal new void GetReaderProperties(string xmlName, string xmlValue)
@@ -128,51 +217,5 @@ namespace EndpointSystems.OrchestrationLibrary
                     Debug.WriteLine("[BtsServiceDeclaration.GetReaderProperties] TODO: implement handler for " + xmlName);
             }
         }
-        
-        public BtsServiceBody ServiceBody
-        {
-            get { return _svcBody; }
-        }
-	
-
-        public BtsCompensation Compensation
-        {
-            get { return _comp;}
-        }
-        public BtsTransactionAttribute TransactionAttribute
-        {
-            get { return _txAtt; }
-        }
-
-        public BtsTx Transaction
-        {
-            get { return _tx; }
-        }
-
-        public List<BtsVariableDeclaration> VariableDeclarations
-        {
-            get { return _varDecs; }
-        }
- 
-        public List<BtsPortDeclaration> PortDeclarations
-        {
-            get { return _portDecs; }
-        }
- 
-        public List<BtsCorrelationDeclaration> CorrelationDeclarations
-        {
-            get { return _corrDecs; }
-        }
-
-        public List<BtsMessageDeclaration> MessageDeclarations
-        {
-            get { return _msgDecs; }
-        }
-
-        public string TypeModifier
-        {
-            get { return _modifier; }
-        }
-
     }
 }

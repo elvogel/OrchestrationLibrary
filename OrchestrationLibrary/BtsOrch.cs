@@ -1,17 +1,28 @@
-#define BTS   //on a BizTalk server
+// Copyright (c) 2007-2009 Endpoint Systems. All rights reserved.
+// 
+// THE PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT WITHOUT ANY WARRANTY. IT IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+// 
+// IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW THE AUTHOR WILL BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF THE AUTHOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+// 
+// 
+#define BTS //on a BizTalk server
 
 #define reader
+
+#region
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-#if BTS
-using Microsoft.BizTalk.ExplorerOM;
-#endif
-using System.Xml;
-using System.Reflection;
 using System.IO;
+using System.Reflection;
+using System.Xml;
+using System.Xml.Schema;
+using Microsoft.BizTalk.ExplorerOM;
+#if BTS
+#endif
+
+#endregion
 
 namespace EndpointSystems.OrchestrationLibrary
 {
@@ -23,7 +34,7 @@ namespace EndpointSystems.OrchestrationLibrary
     /// Note: Our scope is limited to the objects we want to extract DTS data from - we do NOT want to rebuild every possible shape (port defs, role links, etc) 
     ///     - exclude the *right* shapes/objects, but keep the ones we need!
     /// </summary>
-    public sealed class BtsOrch : BtsBaseComponent, IBtsOrch  
+    public sealed class BtsOrch : BtsBaseComponent, IBtsOrch
     {
         //XML variables
         private XmlDocument _xmlViewData;
@@ -31,20 +42,23 @@ namespace EndpointSystems.OrchestrationLibrary
         private XmlDocument _xmlArtifactData;
 
         private XmlReader _reader;
+/*
         private string _viewData;
+*/
 #if BTS
-        private Application                     _btsApp;        
-        
-        
+        private Application _btsApp;
+
+
         /// <summary>
         /// used for extracting basic info about orchestration using MS API
         /// </summary>
-        private BtsOrchestration                _thisOrch;      //Microsoft.BizTalk.ExplorerOM.
+        private BtsOrchestration _thisOrch; //Microsoft.BizTalk.ExplorerOM.
 #endif
+
         /// <summary>
         /// child/parent object of orchestration objects
         /// </summary>
-        private BtsServiceDeclaration           _svcDeclaration;
+        private BtsServiceDeclaration _svcDeclaration;
 
         //properties
         private Guid _core;
@@ -54,14 +68,15 @@ namespace EndpointSystems.OrchestrationLibrary
         private string _modifier;
 
         private BtsTargetXmlAttribute _xmlAttribute;
-        private List<BtsServiceLinkType> _svcLinkTypes = new List<BtsServiceLinkType>();
+        private readonly List<BtsServiceLinkType> _svcLinkTypes = new List<BtsServiceLinkType>();
         private List<BtsServiceLinkDeclaration> _svcLinkDecs = new List<BtsServiceLinkDeclaration>();
-        private List<BtsPortType> _portTypes = new List<BtsPortType>();
-        private List<IBtsMultiPartMessageType> _mmmsgTypes = new List<IBtsMultiPartMessageType>();
-        private List<BtsCorrelationType> _corrTypes = new List<BtsCorrelationType>();
-        private List<BtsMethodMessageType> _msgTypes = new List<BtsMethodMessageType>();
-        
+        private readonly List<BtsPortType> _portTypes = new List<BtsPortType>();
+        private readonly List<IBtsMultiPartMessageType> _mmmsgTypes = new List<IBtsMultiPartMessageType>();
+        private readonly List<BtsCorrelationType> _corrTypes = new List<BtsCorrelationType>();
+        private readonly List<BtsMethodMessageType> _msgTypes = new List<BtsMethodMessageType>();
+
         #region ctors
+
 #if BTS
 
         /// <summary>
@@ -77,8 +92,8 @@ namespace EndpointSystems.OrchestrationLibrary
         /// <param name="orchName"></param>
         public BtsOrch(string appName, string orchName)
         {
-            this.ExtractOrchestrationFromRuntimeAssembly(appName, orchName);
-            this.GetCommonOrchProperties();
+            ExtractOrchestrationFromRuntimeAssembly(appName, orchName);
+            GetCommonOrchProperties();
         }
 #endif
 
@@ -90,21 +105,29 @@ namespace EndpointSystems.OrchestrationLibrary
             settings.IgnoreComments = true;
             settings.IgnoreProcessingInstructions = true;
             settings.IgnoreWhitespace = true;
-            settings.ValidationFlags = System.Xml.Schema.XmlSchemaValidationFlags.None;            
+            settings.ValidationFlags = XmlSchemaValidationFlags.None;
 
             StringReader sr = new StringReader(orchDoc.OuterXml);
-            
+
             _reader = XmlReader.Create(sr, settings);
-            
-            this._xmlArtifactData = orchDoc;            
-            this.GetModuleProperties();            
+
+            _xmlArtifactData = orchDoc;
+            GetModuleProperties();
         }
+
         #endregion
 
         #region support functions
 
 #if BTS
-#region ExtractOrchestrationFromRuntimeAssembly
+
+        #region ExtractOrchestrationFromRuntimeAssembly
+
+        public BtsTargetXmlAttribute XmlAttribute
+        {
+            get { return _xmlAttribute; }
+        }
+
         /// <summary>
         /// extract orchestration XML from BizTalk runtime using application and orchestration name
         /// </summary>
@@ -114,28 +137,33 @@ namespace EndpointSystems.OrchestrationLibrary
         {
             _btsApp = ApplicationS.GetApplication(appName);
             _thisOrch = _btsApp.Orchestrations[orchName];
-            base._name = _thisOrch.FullName;
+            _name = _thisOrch.FullName;
 #if DEBUG
             Debug.Assert(null != _btsApp);
             Debug.Assert(null != _thisOrch);
 #endif
             try
             {
-                Type type1 = BtsAssemblyFactory.GetAssembly(_thisOrch.BtsAssembly.DisplayName).GetType(_thisOrch.FullName);                              
-                object obj = type1.GetField("_symInfo", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static).GetValue(type1);
-                this._xmlViewData = new XmlDocument();
-                
-                this._xmlViewData.LoadXml((string)obj);
-                
+                Type type1 =
+                    BtsAssemblyFactory.GetAssembly(_thisOrch.BtsAssembly.DisplayName).GetType(_thisOrch.FullName);
+                object obj =
+                    type1.GetField("_symInfo", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static).
+                        GetValue(type1);
+                _xmlViewData = new XmlDocument();
+
+                _xmlViewData.LoadXml((string) obj);
+
                 //artifact data - the xml representation of the orchestration
-                obj = type1.GetField("_symODXML", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static).GetValue(type1);
-                this._xmlArtifactData = new XmlDocument();
-                this._xmlArtifactData.LoadXml(((string)obj).Replace("\n", ""));
+                obj =
+                    type1.GetField("_symODXML", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static).
+                        GetValue(type1);
+                _xmlArtifactData = new XmlDocument();
+                _xmlArtifactData.LoadXml(((string) obj).Replace("\n", ""));
 
                 //assign Module XmlNode object for gathering BtsOrch properties
                 //_module = _xmlArtifactData.SelectSingleNode("om:Element[@Name='Module']");
 
-                base.GetCommonOrchProperties();
+                GetCommonOrchProperties();
 
 #if DEBUG
                 Debug.WriteLine(obj.ToString());
@@ -143,7 +171,7 @@ namespace EndpointSystems.OrchestrationLibrary
                 FieldInfo[] fields = type1.GetFields();
                 foreach (FieldInfo fi in fields)
                 {
-                    Debug.WriteLine(String.Format("[{0}] field {1} ", fi.FieldType.ToString(), fi.Name));
+                    Debug.WriteLine(String.Format("[{0}] field {1} ", fi.FieldType, fi.Name));
                 }
 #endif
             }
@@ -162,9 +190,11 @@ namespace EndpointSystems.OrchestrationLibrary
 #endif
             }
         }
-#endregion
+
+        #endregion
+
 #endif //BTS
-        
+
         /// <summary>
         /// extract base orchestration Module properties - ServiceModel, Core, etc.
         /// This is done at this level instead of the base object due to the fact that we have to pull things out of the base orch at the top level, instead of at the 
@@ -174,7 +204,6 @@ namespace EndpointSystems.OrchestrationLibrary
         {
             try
             {
-
 #if reader
                 _reader.MoveToContent();
                 _majVersion = Convert.ToSByte(_reader.GetAttribute("MajorVersion"));
@@ -183,16 +212,16 @@ namespace EndpointSystems.OrchestrationLibrary
                 _scheduleModel = new Guid(_reader.GetAttribute("ScheduleModel"));
 
                 //"inner" properties (Module)
-                _reader.ReadToDescendant("om:Element");                
+                _reader.ReadToDescendant("om:Element");
 
                 _oid = new Guid(_reader.GetAttribute("OID"));
-                
+
                 while (_reader.Read())
                 {
                     if (!_reader.HasAttributes)
                         break;
-                    else if (_reader.Name.Equals("om:Property"))
-                        this.GetReaderProperties(_reader.GetAttribute("Name"), _reader.GetAttribute("Value"));
+                    if (_reader.Name.Equals("om:Property"))
+                        GetReaderProperties(_reader.GetAttribute("Name"), _reader.GetAttribute("Value"));
                     else if (_reader.Name.Equals("om:Element"))
                     {
                         if (_reader.GetAttribute("Type").Equals("PortType"))
@@ -217,16 +246,17 @@ namespace EndpointSystems.OrchestrationLibrary
                             _msgTypes.Add(new BtsMethodMessageType(_reader.ReadSubtree()));
                         else
                         {
-                            Debug.WriteLine("[BtsOrch.GetModuleProperties] unhandled element " + _reader.GetAttribute("Type") + " received (needs implementation)");
+                            Debug.WriteLine("[BtsOrch.GetModuleProperties] unhandled element " +
+                                            _reader.GetAttribute("Type") + " received (needs implementation)");
                             Debugger.Break();
                         }
                     }
                     else
-                        continue;   //what else could we possibly expect??
-                }                
+                        continue; //what else could we possibly expect??
+                }
 #endif
             }
-            catch (Exception ee)
+            catch (Exception)
             {
 #if DEBUG
                 Debugger.Break();
@@ -238,7 +268,7 @@ namespace EndpointSystems.OrchestrationLibrary
         internal new void GetReaderProperties(string xmlName, string xmlValue)
         {
 #if DEBUG
-            Debug.WriteLine("GetReaderProperties(" + xmlName + ", " + xmlValue+ ")");
+            Debug.WriteLine("GetReaderProperties(" + xmlName + ", " + xmlValue + ")");
 #endif
             if (!base.GetReaderProperties(xmlName, xmlValue))
             {
@@ -253,16 +283,11 @@ namespace EndpointSystems.OrchestrationLibrary
                 }
             }
         }
-        
-        private XmlNode GetNode(string xpath)
-        {
-            return null;
-        }
+
         #endregion
 
+        #region props
 
-    #region props
-        
         public string TypeModifier
         {
             get { return _modifier; }
@@ -272,7 +297,7 @@ namespace EndpointSystems.OrchestrationLibrary
         {
             get { return _svcDeclaration; }
         }
-        
+
         public sbyte MinorVersion
         {
             get { return _minVersion; }
@@ -290,32 +315,30 @@ namespace EndpointSystems.OrchestrationLibrary
         }
 
 
-    public Guid Core
-    {
-      get { return _core;}
-    }
+        public Guid Core
+        {
+            get { return _core; }
+        }
 
 
-    public XmlDocument ViewData
-    {
-        get { return _xmlViewData; }
-        /*
+        public XmlDocument ViewData
+        {
+            get { return _xmlViewData; }
+            /*
         set 
         { 
             _xmlViewData = value; 
             _viewData = _xmlViewData.OuterXml; 
         }
          */
-    }
+        }
 
-    public XmlDocument ArtifactData
-    {
-	    get { return _xmlArtifactData;}
-        //set { _xmlArtifactData = value;}
-    }
+        public XmlDocument ArtifactData
+        {
+            get { return _xmlArtifactData; }
+            //set { _xmlArtifactData = value;}
+        }
 
-    #endregion
-        
-    }//BtsOrch
-
+        #endregion
+    } //BtsOrch
 } //namespace

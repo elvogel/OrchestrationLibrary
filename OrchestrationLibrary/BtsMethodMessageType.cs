@@ -1,16 +1,27 @@
+// Copyright (c) 2007-2009 Endpoint Systems. All rights reserved.
+// 
+// THE PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT WITHOUT ANY WARRANTY. IT IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+// 
+// IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW THE AUTHOR WILL BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF THE AUTHOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+// 
+// 
+
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using System.Diagnostics;
+using System.Xml;
+
+#endregion
 
 namespace EndpointSystems.OrchestrationLibrary
 {
-    public class BtsMethodMessageType: BtsBaseComponent
+    public class BtsMethodMessageType : BtsBaseComponent
     {
-        private string _url;
-        private string _modifier;
-        private List<BtsMethodMessageOperation> _msgOps = new List<BtsMethodMessageOperation>();
+        private readonly string _modifier;
+        private readonly List<BtsMethodMessageOperation> _msgOps = new List<BtsMethodMessageOperation>();
+
         public BtsMethodMessageType(XmlReader reader)
             : base(reader)
         {
@@ -18,15 +29,13 @@ namespace EndpointSystems.OrchestrationLibrary
             {
                 if (!reader.HasAttributes)
                     break;
-                else if (reader.Name.Equals("om:Property"))
+                if (reader.Name.Equals("om:Property"))
                 {
                     string valName = reader.GetAttribute("Name");
                     string val = reader.GetAttribute("Value");
-                    if (!base.GetReaderProperties(valName, val))
+                    if (!GetReaderProperties(valName, val))
                     {
-                        if (valName.Equals("Url"))
-                            _url = val;
-                        else if (valName.Equals("AnalystComments"))
+                        if (valName.Equals("AnalystComments"))
                             _comments = val;
                         else if (valName.Equals("Name"))
                             _name = val;
@@ -63,9 +72,8 @@ namespace EndpointSystems.OrchestrationLibrary
 
     public class BtsMethodMessageOperation : BtsBaseComponent
     {
-        private string _opName;
-        private string _opDirection;
-        private List<BtsWebOperationPart> _parts = new List<BtsWebOperationPart>();
+        private readonly List<BtsWebOperationPart> _parts = new List<BtsWebOperationPart>();
+
         public BtsMethodMessageOperation(XmlReader reader)
             : base(reader)
         {
@@ -73,17 +81,15 @@ namespace EndpointSystems.OrchestrationLibrary
             {
                 if (!reader.HasAttributes)
                     break;
-                else if (reader.Name.Equals("om:Property"))
+                if (reader.Name.Equals("om:Property"))
                 {
                     string valName = reader.GetAttribute("Name");
                     string val = reader.GetAttribute("Value");
-                    if (!base.GetReaderProperties(valName, val))
+                    if (!GetReaderProperties(valName, val))
                     {
-                        if (valName.Equals("OperationName"))
-                            _opName = val;
-                        else if (valName.Equals("OperationDirection"))
-                            _opDirection = val;
-                        else if (valName.Equals("AnalystComments"))
+                        if (valName.Equals("OperationDirection"))
+                            continue;
+                        if (valName.Equals("AnalystComments"))
                             _comments = val;
                         else if (valName.Equals("Name"))
                             _name = val;
@@ -102,18 +108,18 @@ namespace EndpointSystems.OrchestrationLibrary
                         _parts.Add(new BtsWebOperationPart(reader.ReadSubtree()));
                     else
                     {
-                        Debug.WriteLine("[BtsMethodMessageOperation.ctor] unhandled element " + reader.GetAttribute("Value"));
+                        Debug.WriteLine("[BtsMethodMessageOperation.ctor] unhandled element " +
+                                        reader.GetAttribute("Value"));
                         Debugger.Break();
                     }
                 }
             }
             reader.Close();
-        }									 
+        }
     }
 
     public class BtsWebOperationPart : BtsBaseComponent
     {
-        private string _clsName;
         public BtsWebOperationPart(XmlReader reader)
             : base(reader)
         {
@@ -121,15 +127,15 @@ namespace EndpointSystems.OrchestrationLibrary
             {
                 if (!reader.HasAttributes)
                     break;
-                else if (reader.Name.Equals("om:Property"))
+                if (reader.Name.Equals("om:Property"))
                 {
                     string valName = reader.GetAttribute("Name");
                     string val = reader.GetAttribute("Value");
-                    if (!base.GetReaderProperties(valName, val))
+                    if (!GetReaderProperties(valName, val))
                     {
                         if (valName.Equals("ClassName"))
-                            _clsName = val;
-                        else if (valName.Equals("AnalystComments"))
+                            continue;
+                        if (valName.Equals("AnalystComments"))
                             _comments = val;
                         else if (valName.Equals("Name"))
                             _name = val;
@@ -149,6 +155,6 @@ namespace EndpointSystems.OrchestrationLibrary
                 }
             }
             reader.Close();
-        }									 
+        }
     }
 }

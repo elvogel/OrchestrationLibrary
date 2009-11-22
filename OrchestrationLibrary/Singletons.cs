@@ -1,12 +1,23 @@
-#define BTS   //on a BizTalk server
+// Copyright (c) 2007-2009 Endpoint Systems. All rights reserved.
+// 
+// THE PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT WITHOUT ANY WARRANTY. IT IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+// 
+// IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW THE AUTHOR WILL BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF THE AUTHOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+// 
+// 
+#define BTS //on a BizTalk server
+
+#region
+
 using System;
-using System.Collections;
-using System.Collections.Generic;
-#if BTS
-using Microsoft.BizTalk.ExplorerOM;
-#endif
-using Microsoft.Win32;
 using System.Diagnostics;
+using Microsoft.BizTalk.ExplorerOM;
+using Microsoft.Win32;
+#if BTS
+#endif
+
+#endregion
+
 namespace EndpointSystems.OrchestrationLibrary
 {
 #if BTS
@@ -17,17 +28,20 @@ namespace EndpointSystems.OrchestrationLibrary
     /// </summary>
     public sealed class CatalogExplorerS
     {
-        private static BtsCatalogExplorer _catalog = new BtsCatalogExplorer();
-        
+        private static readonly BtsCatalogExplorer Catalog = new BtsCatalogExplorer();
+
         public static BtsCatalogExplorer GetCatalogExplorer()
         {
-            if (null == _catalog.ConnectionString)
+            if (null == Catalog.ConnectionString)
             {
-                RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\BizTalk Server\3.0\Administration");
-                _catalog.ConnectionString = String.Format("Server={0};Database={1};Integrated Security=SSPI", key.GetValue("MgmtDBServer"), key.GetValue("MgmtDBName"));
+                RegistryKey key =
+                    Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\BizTalk Server\3.0\Administration");
+                if (key != null)
+                    Catalog.ConnectionString = String.Format("Server={0};Database={1};Integrated Security=SSPI",
+                                                             key.GetValue("MgmtDBServer"), key.GetValue("MgmtDBName"));
             }
 
-            return _catalog;
+            return Catalog;
         }
 
         /// <summary>
@@ -38,17 +52,18 @@ namespace EndpointSystems.OrchestrationLibrary
         /// <returns>BtsCatalogExplorer object (ExplorerOM)</returns>
         public static BtsCatalogExplorer CatalogExplorer(string mgmtDBServer, string mgmtDBName)
         {
-            BtsCatalogExplorer _catalog = new BtsCatalogExplorer();
-            _catalog.ConnectionString = String.Format("Server={0};Database={1};Integrated Security=SSPI", mgmtDBServer, mgmtDBName);
-            return _catalog;
+            BtsCatalogExplorer catalog = new BtsCatalogExplorer();
+            catalog.ConnectionString = String.Format("Server={0};Database={1};Integrated Security=SSPI", mgmtDBServer,
+                                                      mgmtDBName);
+            return catalog;
         }
     } //CatalogExplorerS
 
     public sealed class ApplicationS
     {
-        private static Application _app = null;
+        private static Application _app;
 
-        public static Microsoft.BizTalk.ExplorerOM.Application GetApplication(string appName)
+        public static Application GetApplication(string appName)
         {
             if (null != CatalogExplorerS.GetCatalogExplorer().Applications[appName])
                 _app = CatalogExplorerS.GetCatalogExplorer().Applications[appName];
@@ -57,12 +72,12 @@ namespace EndpointSystems.OrchestrationLibrary
             {
 #if DEBUG
                 ///TODO: Exception Handling
-                Debugger.Break();       
+                Debugger.Break();
 #endif
                 _app = null;
             }
             return _app;
-        }             
+        }
     } //ApplicationS
 #endif //BTS
 } //namespace
