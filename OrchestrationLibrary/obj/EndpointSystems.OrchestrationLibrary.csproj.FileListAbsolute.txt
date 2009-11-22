@@ -3,3 +3,14 @@ D:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\EndpointSystems.Orch
 D:\WORK\OrchestrationLibrary\OrchestrationLibrary\obj\Debug\ResolveAssemblyReference.cache
 D:\WORK\OrchestrationLibrary\OrchestrationLibrary\obj\Debug\EndpointSystems.OrchestrationLibrary.dll
 D:\WORK\OrchestrationLibrary\OrchestrationLibrary\obj\Debug\EndpointSystems.OrchestrationLibrary.pdb
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\EndpointSystems.OrchestrationLibrary.dll
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\EndpointSystems.OrchestrationLibrary.pdb
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\Microsoft.BizTalk.ExplorerOM.dll
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\Microsoft.BizTalk.BtsDbVersion.dll
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\Microsoft.BizTalk.CachingService.dll
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\Microsoft.BizTalk.Tracing.dll
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\Microsoft.BizTalk.Tracking.BasicTypes.dll
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\Microsoft.BizTalk.ExplorerOM.xml
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\obj\Debug\ResolveAssemblyReference.cache
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\obj\Debug\EndpointSystems.OrchestrationLibrary.dll
+F:\WORK\OrchestrationLibrary\OrchestrationLibrary\obj\Debug\EndpointSystems.OrchestrationLibrary.pdb

@@ -2,3 +2,17 @@ D:\WORK\OrchestrationLibrary\OrchLibTest\obj\Debug\OrchLibTest.exe
 D:\WORK\OrchestrationLibrary\OrchLibTest\obj\Debug\OrchLibTest.pdb
 F:\WORK\OrchestrationLibrary\OrchLibTest\obj\Debug\OrchLibTest.exe
 F:\WORK\OrchestrationLibrary\OrchLibTest\obj\Debug\OrchLibTest.pdb
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\OrchLibTest.exe
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\OrchLibTest.pdb
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\EndpointSystems.OrchestrationLibrary.dll
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\Microsoft.BizTalk.IMS.dll
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\Microsoft.BizTalk.ObjectModel.dll
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\Microsoft.BizTalk.CachingService.dll
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\Microsoft.BizTalk.BtsDbVersion.dll
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\Microsoft.BizTalk.ExplorerOM.dll
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\Microsoft.BizTalk.TypeSystem.dll
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\Microsoft.BizTalk.Tracing.dll
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\Microsoft.BizTalk.Tracking.BasicTypes.dll
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\Microsoft.BizTalk.ExplorerOM.xml
+F:\WORK\OrchestrationLibrary\OrchLibTest\bin\Debug\EndpointSystems.OrchestrationLibrary.pdb
+F:\WORK\OrchestrationLibrary\OrchLibTest\obj\Debug\ResolveAssemblyReference.cache
