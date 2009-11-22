@@ -1,0 +1,5 @@
+D:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\EndpointSystems.OrchestrationLibrary.dll
+D:\WORK\OrchestrationLibrary\OrchestrationLibrary\bin\Debug\EndpointSystems.OrchestrationLibrary.pdb
+D:\WORK\OrchestrationLibrary\OrchestrationLibrary\obj\Debug\ResolveAssemblyReference.cache
+D:\WORK\OrchestrationLibrary\OrchestrationLibrary\obj\Debug\EndpointSystems.OrchestrationLibrary.dll
+D:\WORK\OrchestrationLibrary\OrchestrationLibrary\obj\Debug\EndpointSystems.OrchestrationLibrary.pdb

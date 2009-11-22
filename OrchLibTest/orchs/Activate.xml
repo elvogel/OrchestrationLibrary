@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<om:MetaModel MajorVersion="1" MinorVersion="3" Core="2b131234-7959-458d-834f-2dc0769ce683" ScheduleModel="66366196-361d-448d-976f-cab5e87496d2" xmlns:om="http://schemas.microsoft.com/BizTalk/2003/DesignerData">
+  <om:Element Type="Module" OID="7dfdfece-f4bf-4ffc-a88f-cbc17d685949" LowerBound="1.1" HigherBound="60.1">
+    <om:Property Name="ReportToAnalyst" Value="True" />
+    <om:Property Name="Name" Value="Microsoft.Samples.BizTalk.SouthridgeVideo.CableOrderActions" />
+    <om:Property Name="Signal" Value="False" />
+    <om:Element Type="ServiceDeclaration" OID="15a3a185-16f2-4083-b71e-9ebe2643f437" ParentLink="Module_ServiceDeclaration" LowerBound="4.1" HigherBound="59.1">
+      <om:Property Name="InitializedTransactionType" Value="False" />
+      <om:Property Name="IsInvokable" Value="True" />
+      <om:Property Name="TypeModifier" Value="Public" />
+      <om:Property Name="ReportToAnalyst" Value="True" />
+      <om:Property Name="Name" Value="ActivateOrch" />
+      <om:Property Name="Signal" Value="True" />
+      <om:Element Type="ServiceBody" OID="f6e7d253-4445-4021-8f41-9189c2487d15" ParentLink="ServiceDeclaration_ServiceBody">
+        <om:Property Name="Signal" Value="False" />
+        <om:Element Type="Scope" OID="5bdc528c-202d-44ff-a4e2-6700f50429b1" ParentLink="ServiceBody_Statement" LowerBound="9.1" HigherBound="57.1">
+          <om:Property Name="InitializedTransactionType" Value="True" />
+          <om:Property Name="IsSynchronized" Value="False" />
+          <om:Property Name="ReportToAnalyst" Value="True" />
+          <om:Property Name="Name" Value="Calling Code Scope" />
+          <om:Property Name="Signal" Value="True" />
+          <om:Element Type="VariableDeclaration" OID="2feeb713-28ee-4591-a2f3-45562f4d461a" ParentLink="Scope_VariableDeclaration" LowerBound="13.1" HigherBound="14.1">
+            <om:Property Name="UseDefaultConstructor" Value="True" />
+            <om:Property Name="Type" Value="System.Object" />
+            <om:Property Name="ParamDirection" Value="In" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="ReturnValue" />
+            <om:Property Name="Signal" Value="True" />
+          </om:Element>
+          <om:Element Type="VariableDeclaration" OID="e5943d4d-7d6c-4cd9-8381-af467e2eb72d" ParentLink="Scope_VariableDeclaration" LowerBound="14.1" HigherBound="15.1">
+            <om:Property Name="InitialValue" Value="&quot;AnalyzeFailure&quot;" />
+            <om:Property Name="UseDefaultConstructor" Value="False" />
+            <om:Property Name="Type" Value="System.String" />
+            <om:Property Name="ParamDirection" Value="In" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="Reason" />
+            <om:Property Name="Signal" Value="True" />
+          </om:Element>
+          <om:Element Type="VariableDeclaration" OID="d0cbf832-1147-41f3-a0c7-ed54133defb4" ParentLink="Scope_VariableDeclaration" LowerBound="15.1" HigherBound="16.1">
+            <om:Property Name="UseDefaultConstructor" Value="False" />
+            <om:Property Name="Type" Value="System.Array" />
+            <om:Property Name="ParamDirection" Value="In" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="ParameterArray" />
+            <om:Property Name="Signal" Value="True" />
+          </om:Element>
+          <om:Element Type="VariableDeclaration" OID="03b7aeeb-9afa-4021-a646-3cc55aecd680" ParentLink="Scope_VariableDeclaration" LowerBound="16.1" HigherBound="17.1">
+            <om:Property Name="UseDefaultConstructor" Value="False" />
+            <om:Property Name="Type" Value="System.String" />
+            <om:Property Name="ParamDirection" Value="In" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="MethodName" />
+            <om:Property Name="Signal" Value="True" />
+          </om:Element>
+          <om:Element Type="VariableDeclaration" OID="62957f55-3982-4ec0-8df2-71a0f6a04922" ParentLink="Scope_VariableDeclaration" LowerBound="17.1" HigherBound="18.1">
+            <om:Property Name="UseDefaultConstructor" Value="True" />
+            <om:Property Name="Type" Value="System.Exception" />
+            <om:Property Name="ParamDirection" Value="In" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="Ex" />
+            <om:Property Name="Signal" Value="True" />
+          </om:Element>
+          <om:Element Type="VariableDeclaration" OID="71522337-942e-44cd-914e-e2c31d19d653" ParentLink="Scope_VariableDeclaration" LowerBound="18.1" HigherBound="19.1">
+            <om:Property Name="UseDefaultConstructor" Value="True" />
+            <om:Property Name="Type" Value="System.Object" />
+            <om:Property Name="ParamDirection" Value="In" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="CalledObject" />
+            <om:Property Name="Signal" Value="True" />
+          </om:Element>
+          <om:Element Type="VariableDeclaration" OID="25137773-57a7-481b-8bda-6c145b08828c" ParentLink="Scope_VariableDeclaration" LowerBound="19.1" HigherBound="20.1">
+            <om:Property Name="UseDefaultConstructor" Value="False" />
+            <om:Property Name="Type" Value="System.Type" />
+            <om:Property Name="ParamDirection" Value="In" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="ObjectType" />
+            <om:Property Name="Signal" Value="True" />
+          </om:Element>
+          <om:Element Type="VariableAssignment" OID="9f9be5b9-5dde-45c6-aca6-2b2c71f4feac" ParentLink="ComplexStatement_Statement" LowerBound="27.1" HigherBound="29.1">
+            <om:Property Name="Expression" Value="orderHandler.Activate(serviceType, OrderMsg.CustNum, OrderMsg.OrderNum);" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="Activate Svc" />
+            <om:Property Name="Signal" Value="True" />
+          </om:Element>
+          <om:Element Type="MessageDeclaration" OID="7e628b83-0213-49de-8fd9-77f9981889f6" ParentLink="Scope_MessageDeclaration" LowerBound="12.1" HigherBound="13.1">
+            <om:Property Name="Type" Value="System.Xml.XmlDocument" />
+            <om:Property Name="ParamDirection" Value="In" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="XmlOrderMsg" />
+            <om:Property Name="Signal" Value="True" />
+          </om:Element>
+          <om:Element Type="Catch" OID="13e7c017-c579-4d0e-bd07-82f397aaeed7" ParentLink="Scope_Catch" LowerBound="32.1" HigherBound="55.1">
+            <om:Property Name="ExceptionName" Value="CodeEx" />
+            <om:Property Name="ExceptionType" Value="System.Exception" />
+            <om:Property Name="IsFaultMessage" Value="False" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="Catch Exception" />
+            <om:Property Name="Signal" Value="True" />
+            <om:Element Type="VariableAssignment" OID="9bcc3ce4-151e-4700-a8bb-24177c5ad8f5" ParentLink="Catch_Statement" LowerBound="35.1" HigherBound="46.1">
+              <om:Property Name="ReportToAnalyst" Value="True" />
+              <om:Property Name="Name" Value="Initial Exception" />
+              <om:Property Name="Signal" Value="False" />
+            </om:Element>
+            <om:Element Type="Construct" OID="d1327f0b-1788-4f28-a6e9-2229b8f64291" ParentLink="Catch_Statement" LowerBound="46.1" HigherBound="52.1">
+              <om:Property Name="ReportToAnalyst" Value="True" />
+              <om:Property Name="Name" Value="Construct XmlOrderMsg" />
+              <om:Property Name="Signal" Value="True" />
+              <om:Element Type="MessageRef" OID="9a35ca3c-baa1-462c-99fe-a92f6f455a55" ParentLink="Construct_MessageRef" LowerBound="47.35" HigherBound="47.46">
+                <om:Property Name="Ref" Value="XmlOrderMsg" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+              <om:Element Type="MessageAssignment" OID="25160849-8c22-4549-97b2-46fedd4ec999" ParentLink="ComplexStatement_Statement" LowerBound="49.1" HigherBound="51.1">
+                <om:Property Name="Expression" Value="XmlOrderMsg = OrderMsg;" />
+                <om:Property Name="ReportToAnalyst" Value="False" />
+                <om:Property Name="Name" Value="Convert OrderMsg" />
+                <om:Property Name="Signal" Value="True" />
+              </om:Element>
+            </om:Element>
+            <om:Element Type="Call" OID="287db8c2-0d5b-4166-8e75-b83d8bac8e67" ParentLink="Catch_Statement" LowerBound="52.1" HigherBound="54.1">
+              <om:Property Name="Identifier" Value="CallException1" />
+              <om:Property Name="Invokee" Value="Microsoft.Samples.BizTalk.SouthridgeVideo.OrderManager.ExceptionHandlerOrch" />
+              <om:Property Name="ReportToAnalyst" Value="True" />
+              <om:Property Name="Name" Value="Call Exception" />
+              <om:Property Name="Signal" Value="True" />
+              <om:Element Type="Parameter" OID="e7ca5528-a92f-438d-b548-59a6df41265f" ParentLink="InvokeStatement_Parameter">
+                <om:Property Name="Direction" Value="In" />
+                <om:Property Name="Name" Value="Reason" />
+                <om:Property Name="Type" Value="System.String" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+              <om:Element Type="Parameter" OID="40acd5cc-83c1-440a-823d-185a2ef60149" ParentLink="InvokeStatement_Parameter">
+                <om:Property Name="Direction" Value="In" />
+                <om:Property Name="Name" Value="Ex" />
+                <om:Property Name="Type" Value="System.Exception" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+              <om:Element Type="Parameter" OID="ef89a823-6fb8-43eb-84d8-206175702742" ParentLink="InvokeStatement_Parameter">
+                <om:Property Name="Direction" Value="In" />
+                <om:Property Name="Name" Value="CalledObject" />
+                <om:Property Name="Type" Value="System.Object" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+              <om:Element Type="Parameter" OID="5982ec48-00bb-4966-b94f-e1950a896b96" ParentLink="InvokeStatement_Parameter">
+                <om:Property Name="Direction" Value="In" />
+                <om:Property Name="Name" Value="MethodName" />
+                <om:Property Name="Type" Value="System.String" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+              <om:Element Type="Parameter" OID="27e945e1-5856-4d3f-b9f6-37402ffb5f2f" ParentLink="InvokeStatement_Parameter">
+                <om:Property Name="Direction" Value="In" />
+                <om:Property Name="Name" Value="ParameterArray" />
+                <om:Property Name="Type" Value="System.Array" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+              <om:Element Type="Parameter" OID="fea8c845-d496-4a3c-9b65-3604bd8a5347" ParentLink="InvokeStatement_Parameter">
+                <om:Property Name="Direction" Value="In" />
+                <om:Property Name="Name" Value="OrderCorrelation" />
+                <om:Property Name="Type" Value="Microsoft.Samples.BizTalk.SouthridgeVideo.OrderManager.OrderCorrelationType" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+              <om:Element Type="Parameter" OID="17728e76-5719-4397-b8cf-ec1e4d327c4a" ParentLink="InvokeStatement_Parameter">
+                <om:Property Name="Direction" Value="In" />
+                <om:Property Name="Name" Value="XmlOrderMsg" />
+                <om:Property Name="Type" Value="System.Xml.XmlDocument" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+              <om:Element Type="Parameter" OID="977134ee-0926-4536-99f7-e847d8eafb4f" ParentLink="InvokeStatement_Parameter">
+                <om:Property Name="Direction" Value="Out" />
+                <om:Property Name="Name" Value="ReturnValue" />
+                <om:Property Name="Type" Value="System.Object" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+              <om:Element Type="Parameter" OID="e9df841d-6f67-44ea-92a0-e042fc08b34e" ParentLink="InvokeStatement_Parameter">
+                <om:Property Name="Direction" Value="In" />
+                <om:Property Name="Name" Value="ObjectType" />
+                <om:Property Name="Type" Value="System.Type" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+              <om:Element Type="Parameter" OID="4146cf03-471b-467d-b5cd-819b0e84b5db" ParentLink="InvokeStatement_Parameter">
+                <om:Property Name="Direction" Value="In" />
+                <om:Property Name="Name" Value="RoutingInfo" />
+                <om:Property Name="Type" Value="Microsoft.Samples.BizTalk.SouthridgeVideo.SchemaClasses.Routing" />
+                <om:Property Name="Signal" Value="False" />
+              </om:Element>
+            </om:Element>
+          </om:Element>
+        </om:Element>
+        <om:Element Type="MessageDeclaration" OID="344ba136-4c97-4975-b6af-0672d10c94b8" ParentLink="ServiceBody_Declaration" LowerBound="7.15" HigherBound="7.93">
+          <om:Property Name="Type" Value="Microsoft.Samples.BizTalk.SouthridgeVideo.Schemas.OrderSchema" />
+          <om:Property Name="ParamDirection" Value="In" />
+          <om:Property Name="ReportToAnalyst" Value="True" />
+          <om:Property Name="Name" Value="OrderMsg" />
+          <om:Property Name="Signal" Value="True" />
+        </om:Element>
+        <om:Element Type="CorrelationDeclaration" OID="b94fabf8-315f-4989-b120-09377c44e5b5" ParentLink="ServiceBody_Declaration" LowerBound="7.95" HigherBound="7.199">
+          <om:Property Name="Type" Value="Microsoft.Samples.BizTalk.SouthridgeVideo.OrderManager.OrderCorrelationType" />
+          <om:Property Name="ParamDirection" Value="In" />
+          <om:Property Name="ReportToAnalyst" Value="True" />
+          <om:Property Name="Name" Value="OrderCorrelation" />
+          <om:Property Name="Signal" Value="True" />
+        </om:Element>
+        <om:Element Type="VariableDeclaration" OID="7b262978-0581-4988-8c0d-3de1a38679e4" ParentLink="ServiceBody_Declaration" LowerBound="7.201" HigherBound="7.226">
+          <om:Property Name="UseDefaultConstructor" Value="False" />
+          <om:Property Name="Type" Value="System.String" />
+          <om:Property Name="ParamDirection" Value="In" />
+          <om:Property Name="ReportToAnalyst" Value="True" />
+          <om:Property Name="Name" Value="serviceType" />
+          <om:Property Name="Signal" Value="True" />
+        </om:Element>
+        <om:Element Type="VariableDeclaration" OID="b8548387-b48e-4518-ba20-9b096860eb79" ParentLink="ServiceBody_Declaration" LowerBound="7.228" HigherBound="7.326">
+          <om:Property Name="UseDefaultConstructor" Value="False" />
+          <om:Property Name="Type" Value="Microsoft.Samples.BizTalk.SouthridgeVideo.CableProvisioningSystem.OrderHandlerWrapper" />
+          <om:Property Name="ParamDirection" Value="In" />
+          <om:Property Name="ReportToAnalyst" Value="True" />
+          <om:Property Name="Name" Value="orderHandler" />
+          <om:Property Name="Signal" Value="True" />
+        </om:Element>
+        <om:Element Type="VariableDeclaration" OID="3b0f48c1-e39e-4788-b399-55772b55a873" ParentLink="ServiceBody_Declaration" LowerBound="7.328" HigherBound="7.403">
+          <om:Property Name="UseDefaultConstructor" Value="True" />
+          <om:Property Name="Type" Value="Microsoft.Samples.BizTalk.SouthridgeVideo.SchemaClasses.Routing" />
+          <om:Property Name="ParamDirection" Value="In" />
+          <om:Property Name="ReportToAnalyst" Value="True" />
+          <om:Property Name="Name" Value="RoutingInfo" />
+          <om:Property Name="Signal" Value="True" />
+        </om:Element>
+      </om:Element>
+    </om:Element>
+  </om:Element>
+  <om:Element Type="PrintElement" OID="6620659e-1cf7-41ff-851b-80175da430b6">
+    <om:Property Name="Bottom" Value="0" />
+    <om:Property Name="FooterBottom" Value="0" />
+    <om:Property Name="FooterCenter" Value="0" />
+    <om:Property Name="FooterMargin" Value="0" />
+    <om:Property Name="FooterTop" Value="0" />
+    <om:Property Name="HeaderBottom" Value="0" />
+    <om:Property Name="HeaderCenter" Value="3" />
+    <om:Property Name="HeaderMargin" Value="0" />
+    <om:Property Name="HeaderTop" Value="0" />
+    <om:Property Name="Left" Value="0" />
+    <om:Property Name="PagesAcross" Value="0" />
+    <om:Property Name="PagesDown" Value="0" />
+    <om:Property Name="Right" Value="0" />
+    <om:Property Name="Scaling" Value="85" />
+    <om:Property Name="Top" Value="0" />
+    <om:Property Name="Orientation" Value="Portrait" />
+    <om:Property Name="Signal" Value="False" />
+  </om:Element>
+</om:MetaModel>

@@ -1,0 +1,10 @@
+obj\Debug\ResolveAssemblyReference.cache
+obj\Release\ResolveAssemblyReference.cache
+bin\Release\EndpointSystems.OrchestrationLibrary.dll
+bin\Release\EndpointSystems.OrchestrationLibrary.pdb
+obj\Release\EndpointSystems.OrchestrationLibrary.dll
+obj\Release\EndpointSystems.OrchestrationLibrary.pdb
+bin\Debug\EndpointSystems.OrchestrationLibrary.dll
+bin\Debug\EndpointSystems.OrchestrationLibrary.pdb
+obj\Debug\EndpointSystems.OrchestrationLibrary.dll
+obj\Debug\EndpointSystems.OrchestrationLibrary.pdb

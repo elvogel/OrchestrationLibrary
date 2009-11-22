@@ -1,0 +1,14 @@
+obj\Debug\ResolveAssemblyReference.cache
+bin\Release\OrchLibTest.exe
+bin\Release\OrchLibTest.pdb
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\OrchLibTest.exe
+obj\Release\OrchLibTest.pdb
+bin\Debug\OrchLibTest.exe
+bin\Debug\OrchLibTest.pdb
+obj\Debug\OrchLibTest.exe
+obj\Debug\OrchLibTest.pdb
+bin\Debug\EndpointSystems.OrchestrationLibrary.dll
+bin\Debug\EndpointSystems.OrchestrationLibrary.pdb
+bin\Release\EndpointSystems.OrchestrationLibrary.dll
+bin\Release\EndpointSystems.OrchestrationLibrary.pdb
