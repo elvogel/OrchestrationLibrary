@@ -27,19 +27,22 @@ using Microsoft.BizTalk.ExplorerOM;
 namespace EndpointSystems.OrchestrationLibrary
 {
     /// <summary>
-    /// BtsOrch is the 'master parent' shape to all orchestration objects. The main child of this object is BtsServiceDeclaration, which in turns has a main child 
-    /// of BtsServiceBody, which is the 'meat' of the orchestration. 
+    /// BtsOrch is the 'master parent' shape to all orchestration objects. The
+    /// main child of this object is <see cref="BtsServiceDeclaration"/>, which in turns has a
+    /// main child  of <see cref="BtsServiceBody"/>, which is the 'meat' of the orchestration.
     /// 
-    /// 12/2/06: We want to build EVERYTHING - let's make the orch the parent of all bts artifacts, but let's build them all out for future reference
-    /// Note: Our scope is limited to the objects we want to extract DTS data from - we do NOT want to rebuild every possible shape (port defs, role links, etc) 
-    ///     - exclude the *right* shapes/objects, but keep the ones we need!
+    /// 
+    /// 12/2/06: We want to build EVERYTHING - let's make the orch the parent of
+    /// all bts artifacts, but let's build them all out for future reference
+    /// Note: Our scope is limited to the objects we want to extract DTS data
+    /// from - we do NOT want to rebuild every possible shape (port defs, role
+    /// links, etc)  - exclude the *right* shapes/objects, but keep the ones we
+    /// need!
     /// </summary>
     public sealed class BtsOrch : BtsBaseComponent, IBtsOrch
     {
         //XML variables
-        private XmlDocument _xmlViewData;
         //artifact data is the actual orchestration XML that we use to create our shapes with
-        private XmlDocument _xmlArtifactData;
 
         private XmlReader _reader;
 /*
@@ -55,21 +58,10 @@ namespace EndpointSystems.OrchestrationLibrary
         private BtsOrchestration _thisOrch; //Microsoft.BizTalk.ExplorerOM.
 #endif
 
-        /// <summary>
-        /// child/parent object of orchestration objects
-        /// </summary>
-        private BtsServiceDeclaration _svcDeclaration;
-
         //properties
-        private Guid _core;
-        private Guid _scheduleModel;
-        private sbyte _majVersion;
-        private sbyte _minVersion;
-        private string _modifier;
 
-        private BtsTargetXmlAttribute _xmlAttribute;
         private readonly List<BtsServiceLinkType> _svcLinkTypes = new List<BtsServiceLinkType>();
-        private List<BtsServiceLinkDeclaration> _svcLinkDecs = new List<BtsServiceLinkDeclaration>();
+        //private List<BtsServiceLinkDeclaration> _svcLinkDecs = new List<BtsServiceLinkDeclaration>();
         private readonly List<BtsPortType> _portTypes = new List<BtsPortType>();
         private readonly List<IBtsMultiPartMessageType> _mmmsgTypes = new List<IBtsMultiPartMessageType>();
         private readonly List<BtsCorrelationType> _corrTypes = new List<BtsCorrelationType>();
@@ -80,38 +72,63 @@ namespace EndpointSystems.OrchestrationLibrary
 #if BTS
 
         /// <summary>
-        /// The constructor is at the heart of the project. This function does the following:
+        /// The constructor is at the heart of the project. This function does
+        /// the following:
         /// <list type="bullet">
-        /// <item>pulls the orchestration out of the BizTalk runtime assembly</item>
-        /// <item>extracts the view and artifact data out of the selected orchestration</item>
+        /// <item>pulls the orchestration out of the BizTalk runtime assembly
+        /// </item>
+        /// <item>extracts the view and artifact data out of the selected
+        /// orchestration</item>
         /// <item>gathers base orchestration information</item>
-        /// <item>drills into the BtsServiceBody (main orchestration) node and instantiates all child objects</item>
+        /// <item>drills into the <see cref="BtsServiceBody"/> (main
+        /// orchestration) node and instantiates all child objects</item>
         /// </list>
         /// </summary>
-        /// <param name="appName"></param>
-        /// <param name="orchName"></param>
+        /// <param name="appName">The BizTalk application name.</param>
+        /// <param name="orchName">The orchestration name.</param>
         public BtsOrch(string appName, string orchName)
         {
+            ApplicationName = appName;
             ExtractOrchestrationFromRuntimeAssembly(appName, orchName);
             GetCommonOrchProperties();
         }
 #endif
+        /// <summary>
+        /// Creates a new instance of the <see cref="BtsOrch"/> class from the internal XML of the orchestration instance.
+        /// </summary>
+        /// <param name="symInfo">The internal XML of the orchestration.</param>
+        public BtsOrch(string symInfo)
+        {
+            Instantiate(symInfo);
+        }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="BtsOrch"/> class.
+        /// </summary>
+        /// <param name="orchDoc">The serialized orchestration.</param>
         public BtsOrch(XmlDocument orchDoc)
         {
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.CloseInput = true;
-            settings.ConformanceLevel = ConformanceLevel.Auto;
-            settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
-            settings.IgnoreWhitespace = true;
-            settings.ValidationFlags = XmlSchemaValidationFlags.None;
+            Instantiate(orchDoc.OuterXml);
+        }
 
-            StringReader sr = new StringReader(orchDoc.OuterXml);
+        private void Instantiate(string orchDoc)
+        {
+            var settings = new XmlReaderSettings
+            {
+                CloseInput = true,
+                ConformanceLevel = ConformanceLevel.Auto,
+                IgnoreComments = true,
+                IgnoreProcessingInstructions = true,
+                IgnoreWhitespace = true,
+                ValidationFlags = XmlSchemaValidationFlags.None
+            };
+
+            var sr = new StringReader(orchDoc);
 
             _reader = XmlReader.Create(sr, settings);
-
-            _xmlArtifactData = orchDoc;
+            var doc = new XmlDocument();
+            doc.LoadXml(orchDoc);
+            ArtifactData = doc;
             GetModuleProperties();
         }
 
@@ -123,10 +140,10 @@ namespace EndpointSystems.OrchestrationLibrary
 
         #region ExtractOrchestrationFromRuntimeAssembly
 
-        public BtsTargetXmlAttribute XmlAttribute
-        {
-            get { return _xmlAttribute; }
-        }
+        /// <summary>
+        /// Gets the target XML attribute of the orchestration instance.
+        /// </summary>
+        public BtsTargetXmlAttribute XmlAttribute { get; private set; }
 
         /// <summary>
         /// extract orchestration XML from BizTalk runtime using application and orchestration name
@@ -149,16 +166,16 @@ namespace EndpointSystems.OrchestrationLibrary
                 object obj =
                     type1.GetField("_symInfo", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static).
                         GetValue(type1);
-                _xmlViewData = new XmlDocument();
+                ViewData = new XmlDocument();
 
-                _xmlViewData.LoadXml((string) obj);
+                ViewData.LoadXml((string) obj);
 
                 //artifact data - the xml representation of the orchestration
                 obj =
                     type1.GetField("_symODXML", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static).
                         GetValue(type1);
-                _xmlArtifactData = new XmlDocument();
-                _xmlArtifactData.LoadXml(((string) obj).Replace("\n", ""));
+                ArtifactData = new XmlDocument();
+                ArtifactData.LoadXml(((string) obj).Replace("\n", ""));
 
                 //assign Module XmlNode object for gathering BtsOrch properties
                 //_module = _xmlArtifactData.SelectSingleNode("om:Element[@Name='Module']");
@@ -166,10 +183,10 @@ namespace EndpointSystems.OrchestrationLibrary
                 GetCommonOrchProperties();
 
 #if DEBUG
-                Debug.WriteLine(obj.ToString());
+                //Debug.WriteLine(obj.ToString());
 
-                FieldInfo[] fields = type1.GetFields();
-                foreach (FieldInfo fi in fields)
+                var fields = type1.GetFields();
+                foreach (var fi in fields)
                 {
                     Debug.WriteLine(String.Format("[{0}] field {1} ", fi.FieldType, fi.Name));
                 }
@@ -198,7 +215,7 @@ namespace EndpointSystems.OrchestrationLibrary
         /// <summary>
         /// extract base orchestration Module properties - ServiceModel, Core, etc.
         /// This is done at this level instead of the base object due to the fact that we have to pull things out of the base orch at the top level, instead of at the 
-        /// XmlNode level, which is done from ServiceDeclaration level on down
+        /// <see cref="XmlNode"/> level, which is done from the <c>ServiceDeclaration</c> level on down
         /// </summary>
         private void GetModuleProperties()
         {
@@ -206,10 +223,10 @@ namespace EndpointSystems.OrchestrationLibrary
             {
 #if reader
                 _reader.MoveToContent();
-                _majVersion = Convert.ToSByte(_reader.GetAttribute("MajorVersion"));
-                _minVersion = Convert.ToSByte(_reader.GetAttribute("MinorVersion"));
-                _core = new Guid(_reader.GetAttribute("Core"));
-                _scheduleModel = new Guid(_reader.GetAttribute("ScheduleModel"));
+                MajorVersion = Convert.ToSByte(_reader.GetAttribute("MajorVersion"));
+                MinorVersion = Convert.ToSByte(_reader.GetAttribute("MinorVersion"));
+                Core = new Guid(_reader.GetAttribute("Core"));
+                ScheduleModel = new Guid(_reader.GetAttribute("ScheduleModel"));
 
                 //"inner" properties (Module)
                 _reader.ReadToDescendant("om:Element");
@@ -228,12 +245,13 @@ namespace EndpointSystems.OrchestrationLibrary
                             _portTypes.Add(new BtsPortType(_reader.ReadSubtree()));
                         else if (_reader.GetAttribute("Type").Equals("PrintElement"))
                         {
-                            XmlReader r = _reader.ReadSubtree();
+                            //move the reader forward
+                            var r = _reader.ReadSubtree();
                             r.Read();
-                            r.Close();
+                            r.Close();                            
                         }
                         else if (_reader.GetAttribute("Type").Equals("ServiceDeclaration"))
-                            _svcDeclaration = new BtsServiceDeclaration(_reader.ReadSubtree());
+                            ServiceDeclaration = new BtsServiceDeclaration(_reader.ReadSubtree());
                         else if (_reader.GetAttribute("Type").Equals("MultipartMessageType"))
                             _mmmsgTypes.Add(new BtsMultiPartMessageType(_reader.ReadSubtree()));
                         else if (_reader.GetAttribute("Type").Equals("CorrelationType"))
@@ -241,7 +259,7 @@ namespace EndpointSystems.OrchestrationLibrary
                         else if (_reader.GetAttribute("Type").Equals("ServiceLinkType"))
                             _svcLinkTypes.Add(new BtsServiceLinkType(_reader.ReadSubtree()));
                         else if (_reader.GetAttribute("Type").Equals("TargetXMLNamespaceAttribute"))
-                            _xmlAttribute = new BtsTargetXmlAttribute(_reader.ReadSubtree());
+                            XmlAttribute = new BtsTargetXmlAttribute(_reader.ReadSubtree());
                         else if (_reader.GetAttribute("Type").Equals("MethodMessageType"))
                             _msgTypes.Add(new BtsMethodMessageType(_reader.ReadSubtree()));
                         else
@@ -275,7 +293,7 @@ namespace EndpointSystems.OrchestrationLibrary
                 if (xmlName.Equals("AnalystComments"))
                     _comments = xmlValue;
                 else if (xmlName.Equals("TypeModifier"))
-                    _modifier = xmlValue;
+                    TypeModifier = xmlValue;
                 else
                 {
                     Debug.WriteLine("[BtsOrch.ctor] unhandled property " + xmlName);
@@ -288,56 +306,51 @@ namespace EndpointSystems.OrchestrationLibrary
 
         #region props
 
-        public string TypeModifier
-        {
-            get { return _modifier; }
-        }
+        /// <summary>
+        /// Gets the type modifier for the orchestration instance.
+        /// </summary>
+        public string TypeModifier { get; private set; }
 
-        public BtsServiceDeclaration ServiceDeclaration
-        {
-            get { return _svcDeclaration; }
-        }
+        /// <summary>
+        /// Gets the service declaration of the orchestration instance.
+        /// </summary>
+        public BtsServiceDeclaration ServiceDeclaration { get; private set; }
 
-        public sbyte MinorVersion
-        {
-            get { return _minVersion; }
-        }
+        /// <summary>
+        /// Gets the minor version of the orchestration.
+        /// </summary>
+        public sbyte MinorVersion { get; private set; }
 
-        public sbyte MajorVersion
-        {
-            get { return _majVersion; }
-        }
-
-
-        public Guid ScheduleModel
-        {
-            get { return _scheduleModel; }
-        }
+        /// <summary>
+        /// Gets the orchestration major version.
+        /// </summary>
+        public sbyte MajorVersion { get; private set; }
 
 
-        public Guid Core
-        {
-            get { return _core; }
-        }
+        /// <summary>
+        /// Gets the schedule model identification property from the orchestration instance.
+        /// </summary>
+        public Guid ScheduleModel { get; private set; }
 
+        /// <summary>
+        /// Gets the Core identification property from the orchestration instance.
+        /// </summary>
+        public Guid Core { get; private set; }
 
-        public XmlDocument ViewData
-        {
-            get { return _xmlViewData; }
-            /*
-        set 
-        { 
-            _xmlViewData = value; 
-            _viewData = _xmlViewData.OuterXml; 
-        }
-         */
-        }
+        /// <summary>
+        /// Gets the ViewData from the orchestration instance.
+        /// </summary>
+        public XmlDocument ViewData { get; private set; }
 
-        public XmlDocument ArtifactData
-        {
-            get { return _xmlArtifactData; }
-            //set { _xmlArtifactData = value;}
-        }
+        /// <summary>
+        /// Gets the artifact data from the orchestration instance.
+        /// </summary>
+        public XmlDocument ArtifactData { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the name of the application that contains the orchestration.
+        /// </summary>
+        public string ApplicationName { get; set; }
 
         #endregion
     } //BtsOrch

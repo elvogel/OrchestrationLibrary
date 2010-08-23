@@ -15,7 +15,6 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Reflection;
 using System.Xml;
-using System.Xml.XPath;
 using Microsoft.BizTalk.ExplorerOM;
 using Microsoft.Win32;
 
@@ -27,44 +26,69 @@ namespace EndpointSystems.OrchestrationLibrary
     /// <summary>
     /// CatalogExplorerFactory - create CatalogExplorer shapes.
     /// Dependency: Microsoft.BizTalk.ExplorerOM (C:\Program Files\Microsoft BizTalk Server 2006\Developer Tools\Microsoft.BizTalk.ExplorerOM.dll)
-    /// This module must run on a BTS server.
+    /// This module must run on a BizTalk server.
     /// </summary>
     public sealed class CatalogExplorerFactory
     {
+        private static BtsCatalogExplorer catalog;
+        /// <summary>
+        /// Get a singleton instance of the <see cref="BtsCatalogExplorer"/> object.
+        /// </summary>
+        /// <returns>A <see cref="BtsCatalogExplorer"/> instance.</returns>
         public static BtsCatalogExplorer CatalogExplorer()
         {
-            BtsCatalogExplorer catalog = new BtsCatalogExplorer();
-
-            if (catalog.ConnectionString.Length < 0)
+            if (catalog != null) return catalog;
+            
+            catalog = new BtsCatalogExplorer();
+            
+            if (string.IsNullOrEmpty(catalog.ConnectionString))
             {
-                RegistryKey key =
+                var key =
                     Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\BizTalk Server\3.0\Administration");
+
+                //Server={0};Min Pool Size=20;Max Pool Size=100;Initial Catalog={1};Integrated Security=SSPI;MultipleActiveResultSets=True;Network Library=dbnmpntw;Application Name=ShoBiz
                 if (key != null)
-                    catalog.ConnectionString = String.Format("Server={0};Database={1};Integrated Security=SSPI",
+                    catalog.ConnectionString = String.Format("Server={0};Initial Catalog={1};Integrated Security=SSPI",
                                                              key.GetValue("MgmtDBServer"), key.GetValue("MgmtDBName"));
             }
 
             return catalog;
         }
 
-        public static BtsCatalogExplorer CatalogExplorer(string mgmtDBServer, string mgmtDBName)
-        {
-            BtsCatalogExplorer catalog = new BtsCatalogExplorer();
-            catalog.ConnectionString = String.Format("Server={0};Database={1};Integrated Security=SSPI", mgmtDBServer,
-                                                      mgmtDBName);
-            return catalog;
-        }
+    //    /// <summary>
+    //    /// Get a singleton instance of the <see cref="BtsCatalogExplorer"/> object.
+    //    /// </summary>
+    //    /// <param name="mgmtDBServer">The BizTalk management database server name.</param>
+    //    /// <param name="mgmtDBName">The BizTalk management database name.</param>
+    //    /// <returns>A <see cref="BtsCatalogExplorer"/> instance.</returns>
+    //    public static BtsCatalogExplorer CatalogExplorer(string mgmtDBServer, string mgmtDBName)
+    //    {
+    //        if (catalog != null) return catalog;
+            
+    //        catalog = new BtsCatalogExplorer
+    //                          {
+    //                              ConnectionString =
+    //                                  String.Format("Server={0};Database={1};Integrated Security=SSPI", mgmtDBServer,
+    //                                                mgmtDBName)
+    //                          };
+    //        return catalog;
+    //    }
     }
 
 #endif
 
+    /// <summary>
+    /// A factory class for <see cref="BtsBaseComponent"/> objects.
+    /// </summary>
     public sealed class BtsBaseComponentFactory
     {
+        /// <summary>
+        /// Return a new <see cref="BtsBaseComponent"/> instance.
+        /// </summary>
+        /// <returns>a new <see cref="BtsBaseComponent"/> instance.</returns>
         public static BtsBaseComponent BtsBaseComponent()
         {
-            BtsBaseComponent @base = new BtsBaseComponent();
-
-
+            var @base = new BtsBaseComponent();
             return @base;
         }
     }
@@ -82,26 +106,26 @@ namespace EndpointSystems.OrchestrationLibrary
         /// <returns>loaded System.Reflection.Assembly object.</returns>
         public static Assembly GetAssembly(string assemblyDisplayName)
         {
-            string fname = String.Empty;
-            SqlConnection conn = new SqlConnection(CatalogExplorerS.GetCatalogExplorer().ConnectionString);
+            var fname = String.Empty;
+            var conn = new SqlConnection(CatalogExplorerS.GetCatalogExplorer().ConnectionString);
             try
             {
                 conn.Open();
-                SqlCommand sb =
+                var sb =
                     new SqlCommand(
                         String.Format("select properties from adpl_sat where luid='{0}'", assemblyDisplayName), conn);
-                XmlReader read = sb.ExecuteXmlReader();
+                var read = sb.ExecuteXmlReader();
 
-                XmlDocument doc = new XmlDocument();
+                var doc = new XmlDocument();
                 doc.Load(read);
 
-                XPathNavigator nav = doc.CreateNavigator();
+                var nav = doc.CreateNavigator();
                 if (nav != null)
                 {
                     nav.MoveToRoot();
-                    XPathNavigator iterator =
+                    var iterator =
                         nav.SelectSingleNode("DictionarySerializer2OfStringObject/dictionary/item[key = \"SourceLocation\"]");
-                    XPathNodeIterator fullFileName = iterator.SelectChildren("SourceLocation", "");
+                    var fullFileName = iterator.SelectChildren("SourceLocation", "");
                     if (null == fullFileName.Current.Value)
                     {
                         ///TODO: research if %BTAD_Installdir% in properties column expands as needed, or what -- what IF SourceLocation doesn't exist? does that happen?s
@@ -142,7 +166,7 @@ namespace EndpointSystems.OrchestrationLibrary
             reader.Read();
 
             //we don't read a subtree in any of these because we're receiving one from the invoker.
-            string val = reader.GetAttribute("Type");
+            var val = reader.GetAttribute("Type");
             switch (val)
             {
                 case "AtomicTransaction":
